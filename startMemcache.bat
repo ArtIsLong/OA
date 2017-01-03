@@ -1,0 +1,1 @@
+memcached.exe -m 64 -vv -p 11211

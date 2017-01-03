@@ -1,0 +1,5 @@
+Memcached思路
+在项目启动的时候，根据memcache.properties配置文件的配置is_use_db来判断是否使用数据库。
+如果is_use_db=false，则在项目启动的时候就将数据库中需要缓存的数据加载到内存中。如果is_use_db=true，则照常执行即可。
+
+mvn install:install-file -Dfile=F:\java_memcached-release_1.6\hibernate3-3.6.0.jar -DpomFile=F:\java_memcached-release_1.6\pom.xml

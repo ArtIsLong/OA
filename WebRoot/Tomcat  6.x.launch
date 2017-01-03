@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="com.genuitec.eclipse.wdt.jsp.debug.localServer">
+<booleanAttribute key="IS_LAUNCH_CONFIG_SERVER_TYPE" value="false"/>
+<stringAttribute key="LAUNCH_IS_TEMPORARY" value="false"/>
+<stringAttribute key="SERVER_BUNDLE_NAME_ATTR" value="com.genuitec.eclipse.easie.tomcat6"/>
+<stringAttribute key="SERVER_CLASS_NAME_ATTR" value="com.genuitec.eclipse.easie.tomcat6.Tomcat6"/>
+<stringAttribute key="SERVER_DEPLOY_BASE_DIR_ATTR" value="F:/study/apache-tomcat-6.0.14"/>
+<stringAttribute key="SERVER_ICON_PATH" value="platform:/plugin/com.genuitec.eclipse.easie.tomcat_9.0.0.me201108091322/icons/tomcat_logo.gif"/>
+<stringAttribute key="SERVER_TYPE_ID" value="Tomcat  6:x"/>
+<stringAttribute key="SERVER_TYPE_NAME" value="Tomcat  6.x"/>
+<listAttribute key="org.eclipse.jdt.launching.CLASSPATH">
+<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#13;&#10;&lt;runtimeClasspathEntry containerPath=&quot;org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.6&quot; path=&quot;1&quot; type=&quot;4&quot;/&gt;&#13;&#10;"/>
+<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#13;&#10;&lt;runtimeClasspathEntry externalArchive=&quot;F:/study/apache-tomcat-6.0.14/bin/bootstrap.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#13;&#10;"/>
+<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#13;&#10;&lt;runtimeClasspathEntry externalArchive=&quot;D:/java/jdk1.6/lib/tools.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#13;&#10;"/>
+</listAttribute>
+<booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.apache.catalina.startup.Bootstrap"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="start"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dcatalina.home=F:&quot;/study/apache-tomcat-6.0.14&quot; -Dcatalina.base=F:&quot;/study/apache-tomcat-6.0.14&quot; -Djava.endorsed.dirs=F:&quot;/study/apache-tomcat-6.0.14/common/endorsed&quot; -Djava.io.tmpdir=F:&quot;/study/apache-tomcat-6.0.14/temp&quot; -Djava.library.path=D:&quot;/java/jdk1.6/bin;F:/study/apache-tomcat-6.0.14/bin&quot; -Dsun.io.useCanonCaches=false"/>
+<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="F:/study/apache-tomcat-6.0.14/bin"/>
+</launchConfiguration>

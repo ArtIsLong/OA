@@ -1,0 +1,171 @@
+package com.cqs.mail;
+ 
+import javax.mail.Authenticator;
+import javax.mail.PasswordAuthentication;
+ 
+public class MyAuthenticator extends Authenticator {
+ 
+    public MyAuthenticator() {
+        System.out.println("自定义验证器加载...");
+    }
+ 
+    private String userName;
+    private String passWord;
+ 
+    /**
+     * @param userName
+     *            the userName to set
+     */
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+ 
+    public void setPassWord(String passWord) {
+        this.passWord = passWord;
+    }
+ 
+    @Override
+    protected PasswordAuthentication getPasswordAuthentication() {
+        return new PasswordAuthentication("patzhng3", "zl7863991");
+    }
+ 
+}
+jbpm.cfg.xml：
+<?xml   version = "1.0"   encoding = "UTF-8" ?>
+ 
+<process name="TemplateMail" xmlns="http://jbpm.org/4.4/jpdl">
+    <start g="20,25,80,40">
+        <transition to="send rectify note" />
+    </start>
+    <mail g="99,25,115,45" name="send rectify note" template="rectify-template">
+        <transition to="wait" />
+    </mail>
+    <state g="240,25,98,45" name="wait" />
+</process>
+、**--------------------
+ 
+ 
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<jbpm-configuration>
+    <import resource="jbpm.customer.cfg.xml" />
+    <import resource="jbpm.businesscalendar.cfg.xml" />
+    <import resource="jbpm.tx.hibernate.cfg.xml" />
+    <import resource="jbpm.jpdl.cfg.xml" />
+    <import resource="jbpm.bpmn.cfg.xml" />
+    <import resource="jbpm.identity.cfg.xml" />
+</jbpm-configuration>
+ 
+jbpm.customer.cfg.xml：
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<jbpm-configuration>
+ 
+    <import resource="jbpm.default.scriptmanager.xml" />
+    <import resource="jbpm.mail.templates.xml" />
+    <process-engine-context>
+        <repository-service />
+        <repository-cache />
+        <execution-service />
+        <history-service />
+        <management-service />
+        <identity-service />
+        <task-service />
+        <object class="org.jbpm.pvm.internal.id.DatabaseDbidGenerator">
+            <field name="commandService">
+                <ref object="newTxRequiredCommandService" />
+            </field>
+        </object>
+        <object class="org.jbpm.pvm.internal.id.DatabaseIdComposer" init="eager" />
+        <object class="org.jbpm.pvm.internal.el.JbpmElFactoryImpl" />
+        <types resource="jbpm.variable.types.xml" />
+        <address-resolver />
+    </process-engine-context>
+    <transaction-context>
+        <repository-session />
+        <db-session />
+        <message-session />
+        <timer-session />
+        <history-sessions>
+            <object class="org.jbpm.pvm.internal.history.HistorySessionImpl" />
+        </history-sessions>
+        <mail-session>
+            <mail-server>
+                <session-properties resource="jbpm.mail.properties" />
+                <authenticator class="com.cqs.mail.MyAuthenticator" />
+            </mail-server>
+        </mail-session>
+    </transaction-context>
+ 
+</jbpm-configuration>
+ 
+jbpm.mail.properties：
+mail.smtp.auth=true
+mail.smtp.host=smtp.gmail.com
+mail.smtp.port=465
+mail.smtp.socketFactory.port=465
+mail.smtp.socketFactory.class=javax.net.ssl.SSLSocketFactory
+ 
+ 
+TicketTest：
+ 
+package com.severewinter.ticket;
+ 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+ 
+import org.jbpm.api.ProcessInstance;
+import org.jbpm.test.JbpmTestCase;
+ 
+public class TicketTest extends JbpmTestCase {
+    String deploymentId;
+    String groupId1;
+    String groupId2;
+ 
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        deploymentId = repositoryService.createDeployment()
+                .addResourceFromClasspath("process.jpdl.xml").deploy();
+        // registerDeployment(deploymentId);
+ 
+        // create actors
+        identityService
+                .createUser("bb", "Big Brother", null, "nurenok@163.com");
+        identityService
+                .createUser("obrien", null, "O'Brien", "nurenok@163.com");
+        identityService.createUser("charr", null, "Charrington",
+                "nurenok@163.com");
+        groupId1 = identityService.createGroup("thinkpol");
+        groupId2 = identityService.createGroup("innerparty");
+        identityService.createMembership("obrien", groupId2);
+        identityService.createMembership("charr", groupId1);
+        identityService.createMembership("obrien", groupId1);
+    }
+ 
+    @Override
+    protected void tearDown() throws Exception {
+        repositoryService.deleteDeploymentCascade(deploymentId);
+        super.tearDown();
+    }
+ 
+    public void testSendEmail() {
+        String addressee = "597439394@163.com";
+        String newspaper = "恭喜你 ";
+        Date date = new Date();
+        String details = "继续加油吧 ";
+ 
+        Map<String, Object> variables = new HashMap<String, Object>();
+        variables.put("addressee", addressee);
+        variables.put("newspaper", newspaper);
+        variables.put("date", date);
+        variables.put("details", details);
+ 
+        // 启动一个流程实例
+        ProcessInstance processInstance = executionService
+                .startProcessInstanceByKey("TemplateMail", variables);
+        System.out.println("流程实例 ID:" + processInstance.getId());
+    }
+ 
+}

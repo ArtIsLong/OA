@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.gnd.oa.domain">
+
+	<class name="User" table="t_user">
+		<id name="id">
+            <generator class="native"/>
+		</id>
+		<property name="loginName" />
+		<property name="password" />
+		<property name="name" />
+		<property name="gender" />
+		<property name="phoneNumber" />
+		<property name="email" />
+		<property name="description" />
+		<property name="faceIcon" />
+		
+		<!-- department属性，本类与Department的多对一 -->
+		<many-to-one name="department" class="Department" column="departmentId"/>
+		
+		<!-- roles属性，本类与Role的多对多 -->
+		<set name="roles" table="t_user_role" lazy="false">
+			<key column="userId"/>
+			<many-to-many class="Role" column="roleId"/>
+		</set>
+	</class>
+	
+</hibernate-mapping>

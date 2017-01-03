@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.gnd.oa.domain">
+
+	<class name="ApplicationTemplate" table="t_applicationTemplate">
+		<id name="id">
+			<generator class="native" />
+		</id>
+		<property name="name" />
+		<property name="processDefinitionKey" />
+		<property name="path" />
+
+		<!-- applications属性，本类与Application的一对多 -->
+		<set name="applications">
+			<key column="applicationTemplateId" />
+			<one-to-many class="Application" />
+		</set>
+	</class>
+
+</hibernate-mapping>

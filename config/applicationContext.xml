@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+				http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+	<!-- 自动扫描与装配bean -->
+	<context:component-scan base-package="com.gnd.oa" />
+
+	<!-- 导入外部的properties文件 -->
+	<!-- <context:property-placeholder location="classpath:jdbc.properties"/> -->
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:jdbc.properties</value>
+				<value>classpath:memcache.properties</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<!-- 数据连接信息 -->
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="driverClass" value="${jdbc.driver}" />
+		<property name="user" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<!-- 其他配置 -->
+		<!--初始化时获取三个连接，取值应在minPoolSize与maxPoolSize之间。Default: 3 -->
+		<property name="initialPoolSize" value="3" />
+		<!--连接池中保留的最小连接数。Default: 3 -->
+		<property name="minPoolSize" value="3" />
+		<!--连接池中保留的最大连接数。Default: 15 -->
+		<property name="maxPoolSize" value="5" />
+		<!--当连接池中的连接耗尽的时候c3p0一次同时获取的连接数。Default: 3 -->
+		<property name="acquireIncrement" value="3" />
+		<!-- 控制数据源内加载的PreparedStatements数量。如果maxStatements与maxStatementsPerConnection均为0，则缓存被关闭。Default:0 -->
+		<property name="maxStatements" value="8" />
+		<!--maxStatementsPerConnection定义了连接池内单个连接所拥有的最大缓存statements数。Default: 0 -->
+		<property name="maxStatementsPerConnection" value="5" />
+		<!--最大空闲时间,1800秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->
+		<property name="maxIdleTime" value="1800" />
+	</bean>
+
+	<!-- 配置SessionFactory -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<!-- 指定hibernate的配置文件位置 -->
+		<!-- <property name="configLocation" value="classpath:hibernate.cfg.xml"></property> -->
+		<!-- 配置c3p0数据库连接池 -->
+		<property name="dataSource" ref="dataSource" />
+		<!-- 配置Hibernate的其他的属性 -->
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">false</prop>
+				<prop key="hibernate.connection.autocommit">false</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		<!-- 配置Hibernate的映射文件 -->
+		<property name="mappingResources">
+			<list>
+				<value>com/gnd/oa/domain/User.hbm.xml</value>
+				<value>com/gnd/oa/domain/Role.hbm.xml</value>
+				<value>com/gnd/oa/domain/Department.hbm.xml</value>
+				<value>com/gnd/oa/domain/Privilege.hbm.xml</value>
+				<value>com/gnd/oa/domain/Forum.hbm.xml</value>
+				<value>com/gnd/oa/domain/Reply.hbm.xml</value>
+				<value>com/gnd/oa/domain/Topic.hbm.xml</value>
+				<value>com/gnd/oa/domain/ApplicationTemplate.hbm.xml</value>
+				<value>com/gnd/oa/domain/ApproveInfo.hbm.xml</value>
+				<value>com/gnd/oa/domain/Application.hbm.xml</value>
+				<value>jbpm.repository.hbm.xml</value>
+				<value>jbpm.execution.hbm.xml</value>
+				<value>jbpm.history.hbm.xml</value>
+				<value>jbpm.task.hbm.xml</value>
+				<value>jbpm.identity.hbm.xml</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 配置声明式事务管理（采用注解的方式） -->
+	<bean id="txManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<tx:annotation-driven transaction-manager="txManager" />
+
+	<!-- memcached相关配置 -->
+	<bean id="memCachedPool" class="com.danga.MemCached.SockIOPool"
+		factory-method="getInstance" init-method="initialize" destroy-method="shutDown">
+		<property name="servers">
+			<list>
+				<value>${memcache.server1}</value>
+				<value>${memcache.server2}</value>
+			</list>
+		</property>
+		<!-- 多服务器负载均衡 -->
+		<property name="weights">
+			<list>
+				<value>${memcache.weights1}</value>
+				<value>${memcache.weights2}</value>
+			</list>
+		</property>
+		<property name="initConn" value="${memcache.initConn}" />
+		<property name="minConn" value="${memcache.minConn}" />
+		<property name="maxConn" value="${memcache.maxConn}" />
+		<property name="maintSleep" value="${memcache.maintSleep}" />
+		<property name="nagle" value="${memcache.nagle}" />
+		<property name="socketTO" value="${memcache.socketTO}" />
+	</bean>
+
+	<bean id="memCachedClient" class="com.danga.MemCached.MemCachedClient" />
+	
+	<bean id="memcachedService" class="com.gnd.oa.memcache.impl.MemcachedServiceImpl">
+		<property name="memCachedClient" ref="memCachedClient"></property>
+	</bean>
+
+	<!-- 配置Task实时任务调度 -->
+
+	<!-- 实时检测memcached连接池状态 -->
+	<bean id="checkMemcachedTask" class="com.gnd.oa.task.CheckMemcachedTask" />
+
+	<bean id="scheduledTimerTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+		<property name="timerTask" ref="checkMemcachedTask" />
+		<!-- 指定开始计时之前的等待时间 -->
+		<property name="period" value="60000" />
+		<!-- 指定每一次调用任务的时间 -->
+		<property name="delay" value="1000" />
+	</bean>
+
+	<bean class="org.springframework.scheduling.timer.TimerFactoryBean">
+		<property name="scheduledTimerTasks">
+			<list>
+				<ref bean="scheduledTimerTask" />
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 配置ProcessEngine -->
+	<bean id="springHelper" class="org.jbpm.pvm.internal.processengine.SpringHelper">
+		<property name="jbpmCfg" value="jbpm.cfg.xml"/>
+	</bean>
+	<bean id="processEngine" factory-bean="springHelper" factory-method="createProcessEngine"/>
+</beans>

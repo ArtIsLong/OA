@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+<session-factory>
+
+	<!-- 1，数据库连接信息 -->
+	<property name="dialect">
+		org.hibernate.dialect.MySQL5InnoDBDialect
+	</property>
+	
+	<!-- 2，其他配置 -->
+	<property name="show_sql">true</property>
+	<property name="hbm2ddl.auto">update</property>
+
+	<!-- 3，导入映射文件 -->
+	<mapping resource="com/gnd/oa/domain/User.hbm.xml" />
+	<mapping resource="com/gnd/oa/domain/Role.hbm.xml" />
+	<mapping resource="com/gnd/oa/domain/Department.hbm.xml" />
+	<mapping resource="com/gnd/oa/domain/Privilege.hbm.xml" />
+	<mapping resource="com/gnd/oa/domain/Forum.hbm.xml" />
+	<mapping resource="com/gnd/oa/domain/Reply.hbm.xml" />
+	<mapping resource="com/gnd/oa/domain/Topic.hbm.xml" />
+
+</session-factory>
+</hibernate-configuration>
